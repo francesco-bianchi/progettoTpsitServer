@@ -26,17 +26,21 @@ public class Chat {
         cronologia.add(messaggio);
     }
 
-    public ArrayList<String> getCronologia(String dest) {
+    public ArrayList<String> getCronologia(String mittente) {
         ArrayList<String> risultati = new ArrayList<>();
         for (Messaggi messaggio : cronologia) {
-            if ((messaggio.getDest().equals(dest))){
+            if ((messaggio.getDest().equals(mittente))){
                 risultati.add(messaggio.getMessaggio());
             }
         }
         return risultati;
     }
-    public void removeCrono(){
-        cronologia.clear();
+    public void removeCrono(String mittente){
+         for (Messaggi messaggio : cronologia) {
+            if ((messaggio.getDest().equals(mittente))){
+                cronologia.remove(messaggio.getMessaggio());
+            }
+        }
     }
     
     

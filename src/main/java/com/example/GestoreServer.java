@@ -12,7 +12,7 @@ public class GestoreServer extends Thread {
     Socket socket2;
     ArrayList<String> user;
     Chat chat;
-    boolean entrato;
+    boolean entrato=false;
     BufferedReader in;
     DataOutputStream out;
 
@@ -89,8 +89,7 @@ public class GestoreServer extends Thread {
                                         }                                 
                                         setEntrato(true);      
                                         out.writeBytes("l:" + listaMess + ":" + isEntrato()+ ":"+ destinatario +"\n");
-                                        listaMess = "";                                        
-                                        chat.removeCrono();
+                                        
                                     } else {
                                         out.writeBytes("NO\n");
                                     }
@@ -111,12 +110,17 @@ public class GestoreServer extends Thread {
                         break;
                     case "ALL":
                         for (int i = 0; i < chat.getThreads().size(); i++) {
-                            out.writeBytes("ALL:" + fraseSplit[1] + "\n");
+                            if(!chat.getThreads().get(i).getName().equals(this.getName())){
+                                chat.getThreads().get(i).inviaClient("ALL: " + fraseSplit[1] + ":" + this.getName());
+                            }
                         }
 
                         break;
 
                     default:
+                        System.out.println("Client disconnesso");
+                        user.remove(this.getName());
+                        chat.getThreads().remove(this);
                         break;
                 }
 
