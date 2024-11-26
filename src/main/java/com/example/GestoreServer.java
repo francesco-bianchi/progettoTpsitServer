@@ -21,7 +21,6 @@ public class GestoreServer extends Thread {
         this.chat = chat;
     }
 
-
     public void run() {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -32,7 +31,7 @@ public class GestoreServer extends Thread {
             String username = "";
             String[] fraseSplit;
 
-            do {
+            do { // si controlla la validità dell'utente
                 presente = false;
                 username = in.readLine();
 
@@ -49,12 +48,12 @@ public class GestoreServer extends Thread {
 
             } while (presente);
 
-            do { // fai switch
+            do {
                 String lista;
                 String listaMess = "";
                 fraseRic = in.readLine();
                 fraseSplit = fraseRic.split(":"); // Si divide la stringa per controllare ciò che l'utente passa
-                
+
                 switch (fraseSplit[0]) {
                     case "C":
 
@@ -63,48 +62,71 @@ public class GestoreServer extends Thread {
                             lista += chat.getThreads().get(i).getName() + ";";
                         }
 
-                        out.writeBytes(lista + "\n");
+                        out.writeBytes(lista + "\n"); // si manda la lista di tutti gli utenti nella chat
 
                         break;
                     case "PRIV":
                         boolean inviato = false;
                         String destinatario = fraseSplit[1];
                         for (int i = 0; i < chat.getThreads().size(); i++) {
-                            if (chat.getThreads().get(i).getName().equals(destinatario)) {
-                                if (fraseSplit[2].equals("CR")) {
-                                    if (!chat.getCronologia(this.getName(), destinatario).isEmpty()) {
-                                        for(int j=0;j< chat.getCronologia(this.getName(), destinatario).size();j++){
+                            if (chat.getThreads().get(i).getName().equals(destinatario)) { // si controlla se il
+                                                                                           // destinatario è presente
+                                                                                           // nella chat
+                                if (fraseSplit[2].equals("CR")) { // se bisogna far vedere la cronologia
+                                    if (!chat.getCronologia(this.getName(), destinatario).isEmpty()) { // se non è vuota
+                                                                                                       // si scorre e si
+                                                                                                       // mette in una
+                                                                                                       // stringa che
+                                                                                                       // verra inviata
+                                                                                                       // al thread del
+                                                                                                       // client
+                                        for (int j = 0; j < chat.getCronologia(this.getName(), destinatario)
+                                                .size(); j++) {
                                             listaMess += chat.getCronologia(this.getName(), destinatario).get(j) + ";";
-                                        }                           
+                                        }
                                         out.writeBytes("CR:" + listaMess + "\n");
-                                        System.out.println(fraseSplit[0]);
                                     } else {
                                         out.writeBytes("NO\n");
                                     }
 
-                                } else{
+                                } else { // se si manda un messaggio si invia al suo destinatario aggiungendolo nella
+                                         // cronologia di quella chat privata
                                     System.out.println("Frase aggiunta a:" + destinatario);
                                     chat.aggiungiMessaggio(this.getName(), destinatario, fraseSplit[2]);
-                                    chat.getThreads().get(i).inviaClient(fraseSplit[0]+":" +this.getName() + ": " + fraseSplit[2]);
+                                    chat.getThreads().get(i)
+                                            .inviaClient(fraseSplit[0] + ":" + this.getName() + ": " + fraseSplit[2]);
                                     System.out.println(fraseSplit[0]);
                                 }
                                 inviato = true;
                             }
                         }
                         if (!inviato) {
-                            out.writeBytes("KO\n");
+                            out.writeBytes("KO\n"); // nessun destinatario trovato
                         }
                         break;
                     case "ALL":
                         for (int i = 0; i < chat.getThreads().size(); i++) {
-                            if(!chat.getThreads().get(i).getName().equals(this.getName())){
-                                chat.getThreads().get(i).inviaClient("ALL: " + fraseSplit[1] + ":" + this.getName());
+                            if (!chat.getThreads().get(i).getName().equals(this.getName())) {
+                                chat.getThreads().get(i).inviaClient("ALL: " + fraseSplit[1] + ":" + this.getName()); // si
+                                                                                                                      // manda
+                                                                                                                      // a
+                                                                                                                      // tutti
+                                                                                                                      // gli
+                                                                                                                      // utenti
+                                                                                                                      // tranne
+                                                                                                                      // a
+                                                                                                                      // quello
+                                                                                                                      // che
+                                                                                                                      // sta
+                                                                                                                      // inviando
+                                                                                                                      // il
+                                                                                                                      // messaggio
                             }
                         }
 
                         break;
 
-                    default:
+                    default: // uscita e rimozione dell'utente
                         System.out.println("Client disconnesso");
                         user.remove(this.getName());
                         chat.getThreads().remove(this);
