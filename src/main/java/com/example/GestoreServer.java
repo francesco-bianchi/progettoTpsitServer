@@ -52,6 +52,7 @@ public class GestoreServer extends Thread {
             do {
                 String lista;
                 String listaMess = "";
+                String listaMitt = "";
                 fraseRic = in.readLine();
                 fraseSplit = fraseRic.split(":"); // Si divide la stringa per controllare ciò che l'utente passa
                 
@@ -75,8 +76,9 @@ public class GestoreServer extends Thread {
                                     if (!chat.getCronologia(this.getName(), destinatario).isEmpty()) { //se non è vuota si scorre e si mette in una stringa che verra inviata al thread del client
                                         for(int j=0;j< chat.getCronologia(this.getName(), destinatario).size();j++){
                                             listaMess += chat.getCronologia(this.getName(), destinatario).get(j) + ";";
+                                            listaMitt += chat.getMitt(this.getName(), destinatario).get(j) + ";";
                                         }                           
-                                        out.writeBytes("CR:" + listaMess + "\n");
+                                        out.writeBytes("CR:" + listaMess + ":" + listaMitt +"\n");
                                     } else {
                                         out.writeBytes("NO\n");
                                     }

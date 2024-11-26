@@ -33,4 +33,13 @@ public class Chat {
         }
         return risultati;
     }
+    public ArrayList<String> getMitt(String mittente, String destinatario) {
+        ArrayList<String> mittenti = new ArrayList<>();
+        for (Messaggi messaggio : cronologia) { // si va a prendere la chat di cui si vuole ottenere la cronologia controllando il mittente e il destinatario
+            if ((messaggio.getDest().equals(mittente) && messaggio.getMitt().equals(destinatario)) || (messaggio.getDest().equals(destinatario) && messaggio.getMitt().equals(mittente))) {
+                mittenti.add(messaggio.getMitt()); // si fa tornare una lista di tutti i messaggi della chat fra i due utenti
+            }
+        }
+        return mittenti;
+    }
 }
