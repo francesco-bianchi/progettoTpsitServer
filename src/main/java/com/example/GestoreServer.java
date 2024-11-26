@@ -12,7 +12,6 @@ public class GestoreServer extends Thread {
     Socket socket2;
     ArrayList<String> user;
     Chat chat;
-    boolean entrato=false;
     BufferedReader in;
     DataOutputStream out;
 
@@ -20,16 +19,6 @@ public class GestoreServer extends Thread {
         this.socket = socket;
         this.user = user;
         this.chat = chat;
-    }
-    
-
-    public boolean isEntrato() {
-        return entrato;
-    }
-
-
-    public void setEntrato(boolean entrato) {
-        this.entrato = entrato;
     }
 
 
@@ -83,23 +72,21 @@ public class GestoreServer extends Thread {
                         for (int i = 0; i < chat.getThreads().size(); i++) {
                             if (chat.getThreads().get(i).getName().equals(destinatario)) {
                                 if (fraseSplit[2].equals("CR")) {
-                                    if (!chat.getCronologia(this.getName()).isEmpty()) {
-                                        for(int j=0;j< chat.getCronologia(this.getName()).size();j++){
-                                            listaMess += chat.getCronologia(this.getName()).get(j) + ";";
-                                        }                                 
-                                        setEntrato(true);      
-                                        out.writeBytes("l:" + listaMess + ":" + isEntrato()+ ":"+ destinatario +"\n");
-                                        
+                                    if (!chat.getCronologia(this.getName(), destinatario).isEmpty()) {
+                                        for(int j=0;j< chat.getCronologia(this.getName(), destinatario).size();j++){
+                                            listaMess += chat.getCronologia(this.getName(), destinatario).get(j) + ";";
+                                        }                           
+                                        out.writeBytes("CR:" + listaMess + "\n");
+                                        System.out.println(fraseSplit[0]);
                                     } else {
                                         out.writeBytes("NO\n");
                                     }
 
-                                } else {
+                                } else{
                                     System.out.println("Frase aggiunta a:" + destinatario);
-                                    setEntrato(false);
-                                    chat.aggiungiMessaggio(destinatario, fraseSplit[2]);
-                                    chat.getThreads().get(i).inviaClient(this.getName() + ": " + fraseSplit[2] + ":" + isEntrato());
-                                    
+                                    chat.aggiungiMessaggio(this.getName(), destinatario, fraseSplit[2]);
+                                    chat.getThreads().get(i).inviaClient(fraseSplit[0]+":" +this.getName() + ": " + fraseSplit[2]);
+                                    System.out.println(fraseSplit[0]);
                                 }
                                 inviato = true;
                             }

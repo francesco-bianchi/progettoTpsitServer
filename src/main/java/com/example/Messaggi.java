@@ -1,12 +1,11 @@
 package com.example;
 
-import java.util.ArrayList;
 
 public class Messaggi {
     String mitt;
     String dest;
     String messaggio;
-    public Messaggi(String dest, String messaggio){
+    public Messaggi(String mitt, String dest, String messaggio){
         this.mitt = mitt;
         this.dest = dest;
         this.messaggio = messaggio;
