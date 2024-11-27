@@ -13,6 +13,7 @@ public class Main {
             System.out.println("Server partito");
             while(true){
                 Socket socket = serverSocket.accept();
+                System.out.println("Connessione");
                 GestoreServer gs = new GestoreServer(socket,  arrUser, chat);
                 gs.start();
             }

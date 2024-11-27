@@ -104,10 +104,13 @@ public class GestoreServer extends Thread {
 
                         break;
 
-                    default: //uscita e rimozione dell'utente
+                    case "EXT": //uscita e rimozione dell'utente
                         System.out.println("Client disconnesso");
                         user.remove(this.getName());
                         chat.getThreads().remove(this);
+                        break;
+                    default:
+                        
                         break;
                 }
 
