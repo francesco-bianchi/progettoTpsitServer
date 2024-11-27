@@ -36,7 +36,7 @@ public class GestoreServer extends Thread {
                 presente = false;
                 username = in.readLine();
 
-                if (user.contains(username)) {
+                if (user.contains(username) || username.isEmpty()) {
                     out.writeBytes("KOS" + "\n");
                     presente = true;
                 } else {
@@ -114,7 +114,6 @@ public class GestoreServer extends Thread {
             } while (!fraseSplit[0].equals("EXT"));
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -125,7 +124,7 @@ public class GestoreServer extends Thread {
             out.writeBytes(msg + "\n");
 
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 }
